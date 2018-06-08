@@ -1,0 +1,73 @@
+digraph "digraph_erd" {
+    /*** configurations ***/
+
+    // Common attributes of Graphs.
+    graph [
+        charset="UTF-8",
+        rankdir="LR",
+        ranksep="1.4",
+        size="53",
+        concentrate="1",
+        labelloc="t",
+        label="sampleDB"
+    ];
+
+    // Common attributes of Nodes.
+    node [
+        style="filled",
+        fillcolor="white"
+    ];
+
+    // Common attributes of Edges.
+    edge [
+        arrowtail="none",
+        arrowsize="0.7"
+    ];
+
+    /*** subgraphs ***/
+    subgraph "cluster_cluster_t_accessory" {
+        // Attributes of subgraph.
+        graph [
+            labelloc="t",
+            labeljust="l",
+            fontsize="15",
+            penwidth="1",
+            bgcolor="#eeeeee",
+            color="#6060a0",
+            label="t_user",
+            style="solid"
+        ];
+
+        "column_t_user" [
+            group="2",
+            width="3.4",
+            fontsize="12",
+            shape="record",
+            label="{{{<user_id>user_id: ユーザーID\l}|{<user_name>user_name: ユーザーネーム\l}}}"
+        ];
+    }
+    subgraph "cluster_cluster_t_log" {
+        // Attributes of subgraph.
+        graph [
+            labelloc="t",
+            labeljust="l",
+            fontsize="15",
+            penwidth="1",
+            bgcolor="#eeeeee",
+            color="#6060a0",
+            label="t_user",
+            style="solid"
+        ];
+
+        "column_t_log" [
+            group="2",
+            width="3.4",
+            fontsize="12",
+            shape="record",
+            label="{{{<log_id>log_id: ログID\l}|{<user_id>user_id: ユーザーID\l}}}"
+        ];
+    }
+
+    // Definition of nodes.
+    "column_t_user": "user_id" -> "column_t_log":"user_id" [color="#9bd833", label="\ "];
+}

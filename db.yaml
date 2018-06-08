@@ -1,0 +1,6 @@
+# Connection
+database: choku2
+host: 127.0.0.1
+user: root
+password:
+port: 13306
