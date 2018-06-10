@@ -2,13 +2,18 @@ package main
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/umasoya/goer/goer"
 )
 
 func main() {
-	args, opts := goer.Parse()
+	params, err := goer.Parse()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	fmt.Printf("%v\n", opts.Outfile)
-	fmt.Printf("%#v\n", args)
+	fmt.Printf("%v\n", params)
+	fmt.Printf("%v\n", params.Args)
+	fmt.Printf("%v\n", params.Options)
 }

@@ -1,9 +1,6 @@
 package goer
 
 import (
-	"os"
-	"log"
-
 	flags "github.com/jessevdk/go-flags"
 )
 
@@ -13,15 +10,20 @@ type Options struct {
 	Outfile	string	`short:"o" description:"Write output to file outfile"`
 }
 
-var opts Options
+type Args struct {
+	Args []string
+	Options
+}
 
-func Parse() ([]string, Options) {
-	args, err := flags.Parse(&opts)
+func Parse() (Args, error) {
+	var opts Options
+
+	args,err := flags.Parse(&opts)
 
 	if err != nil {
-		log.Fatal(err)
-		os.Exit(1)
+		return Args{},err
 	}
 
-	return args,opts
+	params := Args{Args: args, Options : opts}
+	return params,err
 }

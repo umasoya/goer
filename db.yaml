@@ -1,5 +1,5 @@
 # Connection
-database: choku2
+database: goer
 host: 127.0.0.1
 user: root
 password:
