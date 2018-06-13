@@ -17,6 +17,20 @@ type Conn struct {
 	Port	string
 }
 
+type Column struct {
+	Field	string
+	Type	string
+	Null	bool
+	Key		string
+	Extra	string
+	Comment	string
+}
+
+type Table struct {
+	Name	string
+	Column	[]Column
+}
+
 func parseYaml(params Args) (Conn, error) {
 	var conn Conn
 
@@ -61,24 +75,53 @@ func yamlToDsn(conn Conn) (string, error) {
 	return addr,nil
 }
 
-func Connection(params Args) (*sql.DB,error) {
-	var db *sql.DB
+func getTables(db *sql.DB) (tables []Table, err error) {
+	tables = []Table{}
 
+	rows, err := db.Query(`SHOW TABLES`)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var table string
+		if err = rows.Scan(&table); err != nil {
+			return
+		}
+		tables = append(tables, Table{Name: table})
+	}
+	return
+}
+
+/**
+ * Analyzed from Tables, Foreign Keys
+ */
+func analyze(db *sql.DB) (tables []Table, err error) {
+	tables, err = getTables(db)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func Run(params Args) ([]Table, error) {
 	conn,err := parseYaml(params)
 	if err != nil {
-		return db,err
+		return []Table{}, err
 	}
 
 	dsn, err := yamlToDsn(conn)
 	if err != nil {
-		return db,err
+		return []Table{}, err
 	}
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
-		return db,err
+		return []Table{}, err
 	}
 	defer db.Close()
 
-	return db, nil
+	return analyze(db)
 }

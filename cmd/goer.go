@@ -13,10 +13,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db,err := goer.Connection(params)
+	res,err := goer.Run(params)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("%+v\n", dsn)
+	fmt.Printf("%#v\n", res)
 }
