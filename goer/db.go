@@ -43,7 +43,11 @@ func yamlToDsn(conn Conn) (string, error) {
 	}
 
 	if conn.Host != "localhost" {
-		addr += "@tcp(" + conn.Host + ":" + conn.Port + ")"
+		if len(conn.Port) == 0 {
+			addr += "@tcp(" + conn.Host + ":3306)"
+		} else {
+			addr += "@tcp(" + conn.Host + ":" + conn.Port + ")"
+		}
 	} else {
 		addr += "@"
 	}

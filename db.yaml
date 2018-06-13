@@ -3,4 +3,4 @@ database: goer
 host: 127.0.0.1
 user: root
 password: password
-port: 13306
+port: 3306
