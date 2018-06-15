@@ -5,42 +5,42 @@ import (
 	"errors"
 	"io/ioutil"
 
-	"gopkg.in/yaml.v2"
 	_ "github.com/go-sql-driver/mysql"
+	"gopkg.in/yaml.v2"
 )
 
 type Conn struct {
-	Database	string
-	Host	string
-	User	string
-	Password	string
-	Port	string
+	Database string
+	Host     string
+	User     string
+	Password string
+	Port     string
 }
 
 type Column struct {
-	Field	string
-	Type	string
-	Null	bool
-	Key		string
-	Extra	string
-	Comment	string
+	Field   string
+	Type    string
+	Null    bool
+	Key     string
+	Extra   string
+	Comment string
 }
 
 type Table struct {
-	Name	string
-	Column	[]Column
+	Name   string
+	Column []Column
 }
 
 func parseYaml(params Args) (Conn, error) {
 	var conn Conn
 
-	buf,err := ioutil.ReadFile(params.Args[0])
+	buf, err := ioutil.ReadFile(params.Args[0])
 	if err != nil {
-		return conn,err
+		return conn, err
 	}
 
 	err = yaml.Unmarshal(buf, &conn)
-	return conn,err
+	return conn, err
 }
 
 func yamlToDsn(conn Conn) (string, error) {
@@ -48,7 +48,7 @@ func yamlToDsn(conn Conn) (string, error) {
 
 	if len(conn.User) == 0 {
 		err := errors.New("undefined user")
-		return addr, err
+		return "", err
 	}
 	addr = conn.User
 
@@ -56,7 +56,7 @@ func yamlToDsn(conn Conn) (string, error) {
 		addr += ":" + conn.Password
 	}
 
-	if conn.Host != "localhost" {
+	if conn.Host != "localhost" && len(conn.Host) != 0 {
 		if len(conn.Port) == 0 {
 			addr += "@tcp(" + conn.Host + ":3306)"
 		} else {
@@ -72,7 +72,7 @@ func yamlToDsn(conn Conn) (string, error) {
 	}
 	addr += "/" + conn.Database
 
-	return addr,nil
+	return addr, nil
 }
 
 func getTables(db *sql.DB) (tables []Table, err error) {
@@ -107,7 +107,7 @@ func analyze(db *sql.DB) (tables []Table, err error) {
 }
 
 func Run(params Args) ([]Table, error) {
-	conn,err := parseYaml(params)
+	conn, err := parseYaml(params)
 	if err != nil {
 		return []Table{}, err
 	}
