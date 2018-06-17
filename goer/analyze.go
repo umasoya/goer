@@ -23,7 +23,7 @@ func getTables(db *sql.DB) (tables []Table, err error) {
 
 // Analyze from Tables, Foreign Keys
 func Analyze(db *sql.DB) (tables []Table, err error) {
-	tables, err := getTables(db)
+	tables, err = getTables(db)
 	if err != nil {
 		return
 	}

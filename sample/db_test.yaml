@@ -1,0 +1,6 @@
+# for test
+database: test_goer
+host: 127.0.0.1
+user: root
+password: password
+port: 3306
