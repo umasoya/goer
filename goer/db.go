@@ -5,10 +5,11 @@ import (
 	"errors"
 	"io/ioutil"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql" // mysql driver
 	"gopkg.in/yaml.v2"
 )
 
+// Conn is DB connection configs
 type Conn struct {
 	Database string
 	Host     string
@@ -17,6 +18,7 @@ type Conn struct {
 	Port     string
 }
 
+// Column is struct of table column
 type Column struct {
 	Field   string
 	Type    string
@@ -26,6 +28,7 @@ type Column struct {
 	Comment string
 }
 
+// Table is struct of table
 type Table struct {
 	Name   string
 	Column []Column
@@ -75,37 +78,7 @@ func yamlToDsn(conn Conn) (string, error) {
 	return addr, nil
 }
 
-func getTables(db *sql.DB) (tables []Table, err error) {
-	tables = []Table{}
-
-	rows, err := db.Query(`SHOW TABLES`)
-	if err != nil {
-		return
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var table string
-		if err = rows.Scan(&table); err != nil {
-			return
-		}
-		tables = append(tables, Table{Name: table})
-	}
-	return
-}
-
-/**
- * Analyzed from Tables, Foreign Keys
- */
-func analyze(db *sql.DB) (tables []Table, err error) {
-	tables, err = getTables(db)
-	if err != nil {
-		return
-	}
-
-	return
-}
-
+// Run parseYaml,yamlToDsn and Analyze
 func Run(params Args) ([]Table, error) {
 	conn, err := parseYaml(params)
 	if err != nil {
@@ -123,5 +96,5 @@ func Run(params Args) ([]Table, error) {
 	}
 	defer db.Close()
 
-	return analyze(db)
+	return Analyze(db)
 }
